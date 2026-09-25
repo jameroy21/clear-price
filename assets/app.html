@@ -1,0 +1,922 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="description" content="Calculate the real sale price after one or two stacked discounts. Clear Price shows what you pay and how much you save." />
+    <meta name="keywords" content="stacked discount calculator, discount calculator, sale price calculator" />
+    <meta name="referrer" content="no-referrer" />
+    <link rel="canonical" href="../" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Clear Price" />
+    <meta property="og:title" content="Clear Price: Stacked Discount Calculator" />
+    <meta property="og:description" content="Calculate the real sale price after one or two stacked discounts. See what you pay and how much you save." />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Clear Price: Stacked Discount Calculator" />
+    <meta name="twitter:description" content="Calculate the real sale price after one or two stacked discounts. See what you pay and how much you save." />
+    <meta name="theme-color" content="#f2f6f4" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#101614" media="(prefers-color-scheme: dark)" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Clear Price" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png" />
+    <title>Clear Price: Stacked Discount Calculator</title>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Clear Price",
+        "alternateName": "Clear Price: Stacked Discount Calculator",
+        "description": "Calculate the real sale price after one or two stacked discounts. Clear Price shows what you pay and how much you save.",
+        "applicationCategory": "FinanceApplication",
+        "operatingSystem": "Any",
+        "isAccessibleForFree": true,
+        "author": {
+          "@type": "Person",
+          "name": "Jame Roy"
+        }
+      }
+    </script>
+    <style>
+      @font-face {
+        font-family: "Clear Sans";
+        src: url("./noto-sans-regular.ttf") format("truetype");
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "Clear Sans";
+        src: url("./noto-sans-bold.ttf") format("truetype");
+        font-style: normal;
+        font-weight: 700;
+        font-display: swap;
+      }
+
+      :root {
+        color-scheme: light dark;
+        --page: #f2f6f4;
+        --surface: #ffffff;
+        --ink: #10201a;
+        --muted: #4b5f56;
+        --line: #c8d2cd;
+        --field: #f8faf9;
+        --accent: #00683f;
+        --accent-strong: #005232;
+        --accent-text: #ffffff;
+        --result: #d8f54a;
+        --result-ink: #142000;
+        --error: #b42318;
+        --focus: #005fcc;
+        --shadow: 0 18px 60px rgba(19, 49, 36, 0.12);
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --page: #101614;
+          --surface: #18211e;
+          --ink: #f4f8f6;
+          --muted: #b4c2bc;
+          --line: #43524c;
+          --field: #101714;
+          --accent: #65d69f;
+          --accent-strong: #8ae9b9;
+          --accent-text: #07150e;
+          --result: #c8e93b;
+          --result-ink: #101800;
+          --error: #ff8a80;
+          --focus: #78b7ff;
+          --shadow: 0 22px 70px rgba(0, 0, 0, 0.34);
+        }
+      }
+
+      * { box-sizing: border-box; }
+      [hidden] { display: none !important; }
+
+      html { min-width: 320px; }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        min-height: 100svh;
+        background:
+          linear-gradient(90deg, transparent 0 49.7%, color-mix(in srgb, var(--line) 28%, transparent) 49.7% 50.3%, transparent 50.3%) center / 44px 44px,
+          linear-gradient(transparent 0 49.7%, color-mix(in srgb, var(--line) 28%, transparent) 49.7% 50.3%, transparent 50.3%) center / 44px 44px,
+          var(--page);
+        color: var(--ink);
+        font-family: "Clear Sans", sans-serif;
+        font-size: 18px;
+        line-height: 1.45;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      button, input { font: inherit; }
+
+      main {
+        width: min(100%, 1040px);
+        min-height: 100svh;
+        margin: 0 auto;
+        padding: max(28px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) max(28px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
+        display: grid;
+        place-items: center;
+      }
+
+      .app-shell {
+        width: 100%;
+        display: grid;
+        justify-items: center;
+        gap: 18px;
+      }
+
+      .layout {
+        width: min(100%, 640px);
+        background: var(--surface);
+        border: 1px solid var(--line);
+        box-shadow: var(--shadow);
+        border-radius: 26px;
+        overflow: hidden;
+      }
+
+      .calculator { padding: clamp(26px, 6vw, 48px); }
+
+      h1 {
+        max-width: 12ch;
+        margin: 0;
+        font-family: "Clear Sans", sans-serif;
+        font-size: clamp(2.3rem, 7vw, 4rem);
+        line-height: 0.98;
+        letter-spacing: -0.05em;
+      }
+
+      .intro {
+        margin: 16px 0 30px;
+        color: var(--muted);
+        font-size: 1.06rem;
+      }
+
+      form { display: grid; gap: 22px; }
+
+      .field { min-width: 0; }
+
+      .label-row {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 8px;
+      }
+
+      label {
+        font-family: "Clear Sans", sans-serif;
+        font-size: 1.06rem;
+        font-weight: 700;
+      }
+
+      .optional {
+        color: var(--muted);
+        font-size: 1rem;
+        white-space: nowrap;
+      }
+
+      .input-wrap {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        align-items: center;
+        min-height: 64px;
+        border: 2px solid var(--line);
+        border-radius: 13px;
+        background: var(--field);
+        transition: border-color 150ms ease, box-shadow 150ms ease;
+      }
+
+      .input-wrap:focus-within {
+        border-color: var(--focus);
+        box-shadow: 0 0 0 4px color-mix(in srgb, var(--focus) 20%, transparent);
+      }
+
+      .affix {
+        padding-inline: 18px 4px;
+        color: var(--muted);
+        font-family: "Clear Sans", sans-serif;
+        font-size: 1.38rem;
+        font-weight: 700;
+        user-select: none;
+      }
+
+      .affix.suffix { padding-inline: 4px 18px; }
+
+      input {
+        width: 100%;
+        min-width: 0;
+        height: 60px;
+        padding: 0 10px;
+        border: 0;
+        outline: 0;
+        background: transparent;
+        color: var(--ink);
+        font-family: "Clear Sans", sans-serif;
+        font-size: 1.42rem;
+        font-weight: 700;
+        line-height: 1;
+        appearance: textfield;
+      }
+
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button { margin: 0; appearance: none; }
+
+      input::placeholder { color: var(--muted); opacity: 0.82; }
+
+      .input-wrap.has-error { border-color: var(--error); }
+
+      .error {
+        min-height: 1.2em;
+        margin: 6px 2px 0;
+        color: var(--error);
+        font-size: 1rem;
+        font-weight: 700;
+      }
+
+      .submit {
+        width: 100%;
+        min-height: 66px;
+        margin-top: 2px;
+        border: 0;
+        border-radius: 13px;
+        background: var(--accent);
+        color: var(--accent-text);
+        font-family: "Clear Sans", sans-serif;
+        font-size: 1.18rem;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 5px 0 color-mix(in srgb, var(--accent-strong) 88%, black);
+        transition: transform 100ms ease, box-shadow 100ms ease, background 150ms ease;
+      }
+
+      .submit:hover { background: var(--accent-strong); }
+      .submit:active { transform: translateY(3px); box-shadow: 0 2px 0 color-mix(in srgb, var(--accent-strong) 88%, black); }
+      .submit:focus-visible { outline: 4px solid var(--focus); outline-offset: 4px; }
+
+      .result {
+        display: none;
+        position: relative;
+        min-height: 100%;
+        padding: clamp(28px, 6vw, 48px);
+        background: var(--result);
+        color: var(--result-ink);
+      }
+
+      .layout.has-result .result {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .result::before,
+      .result::after {
+        content: "";
+        position: absolute;
+        left: -11px;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: var(--surface);
+      }
+      .result::before { top: -11px; }
+      .result::after { bottom: -11px; }
+
+      .result-label {
+        margin: 0 0 4px;
+        font-family: "Clear Sans", sans-serif;
+        font-size: 1rem;
+        font-weight: 700;
+      }
+
+      .final-price {
+        display: block;
+        margin: 0;
+        font-family: "Clear Sans", sans-serif;
+        font-size: clamp(3.8rem, 14vw, 6.4rem);
+        font-weight: 700;
+        line-height: 0.98;
+        letter-spacing: -0.065em;
+        overflow-wrap: anywhere;
+      }
+
+      .saved {
+        margin: 18px 0 0;
+        font-size: 1.35rem;
+        font-weight: 700;
+      }
+
+      .effective {
+        display: inline-flex;
+        width: fit-content;
+        margin-top: 10px;
+        padding: 5px 10px;
+        border: 2px solid currentColor;
+        border-radius: 999px;
+        font-size: 1rem;
+        font-weight: 700;
+      }
+
+      .price-path {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        margin: 30px 0 0;
+        padding-top: 20px;
+        border-top: 2px solid color-mix(in srgb, var(--result-ink) 30%, transparent);
+        font-size: 1rem;
+        font-weight: 700;
+      }
+
+      .step-price { white-space: nowrap; }
+      .step-discount { color: color-mix(in srgb, var(--result-ink) 72%, transparent); white-space: nowrap; }
+      .arrow { font-size: 1.15rem; line-height: 1; }
+
+      .install-panel,
+      .app-info {
+        width: min(100%, 640px);
+        background: var(--surface);
+        border: 1px solid var(--line);
+        color: var(--ink);
+      }
+
+      .install-panel {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        padding: 18px 20px;
+        border-radius: 16px;
+      }
+
+      .install-copy { min-width: 0; }
+      .install-copy strong {
+        display: block;
+        font-family: "Clear Sans", sans-serif;
+        font-size: 1.08rem;
+      }
+      .install-copy p { margin: 3px 0 0; color: var(--muted); }
+
+      .install-button,
+      .dismiss-button {
+        min-height: 52px;
+        border-radius: 10px;
+        border: 2px solid var(--accent);
+        font-family: "Clear Sans", sans-serif;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .install-button {
+        flex: 0 0 auto;
+        padding: 0 18px;
+        background: var(--accent);
+        color: var(--accent-text);
+      }
+      .install-button:hover { background: var(--accent-strong); border-color: var(--accent-strong); }
+      .install-button:focus-visible,
+      .dismiss-button:focus-visible { outline: 4px solid var(--focus); outline-offset: 3px; }
+
+      .install-help {
+        display: none;
+        width: min(100%, 640px);
+        padding: 20px;
+        border: 2px solid var(--accent);
+        border-radius: 16px;
+        background: var(--surface);
+      }
+      .install-help.is-visible { display: block; }
+      .install-help h2 { margin: 0 0 8px; font-family: "Clear Sans", sans-serif; font-size: 1.28rem; }
+      .install-help p { margin: 8px 0; }
+      .dismiss-button { margin-top: 8px; padding: 0 16px; background: transparent; color: var(--accent); }
+
+      .app-info {
+        padding: 22px;
+        border-radius: 16px;
+        display: grid;
+        gap: 20px;
+      }
+      .info-item h2 {
+        margin: 0 0 5px;
+        font-family: "Clear Sans", sans-serif;
+        font-size: 1.12rem;
+      }
+      .info-item p { margin: 0; color: var(--muted); }
+
+      .copyright {
+        width: min(100%, 640px);
+        margin: 0;
+        padding: 10px 4px;
+        border: 0;
+        background: transparent;
+        color: var(--muted);
+        font: inherit;
+        text-align: center;
+        font-size: 1rem;
+        cursor: default;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+      .copyright:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+      .owner-mode {
+        position: fixed;
+        inset: 0;
+        z-index: 20;
+        display: none;
+        overflow-y: auto;
+        padding: max(24px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+        background: var(--page);
+      }
+      .owner-mode.is-visible { display: block; }
+      .owner-inner { width: min(100%, 780px); margin: 0 auto; }
+      .owner-banner {
+        padding: clamp(24px, 6vw, 42px);
+        border-radius: 22px 22px 0 0;
+        background: var(--accent);
+        color: var(--accent-text);
+      }
+      .owner-banner h1 {
+        max-width: none;
+        font-size: clamp(2rem, 7vw, 3.5rem);
+        letter-spacing: -0.04em;
+      }
+      .owner-banner p { margin: 14px 0 0; }
+      .owner-section {
+        padding: clamp(22px, 5vw, 34px);
+        border: 1px solid var(--line);
+        border-top: 0;
+        background: var(--surface);
+      }
+      .owner-section h2 {
+        margin: 0 0 14px;
+        font-family: "Clear Sans", sans-serif;
+        font-size: 1.45rem;
+      }
+      .seo-list { display: grid; gap: 16px; margin: 0; }
+      .seo-row { display: grid; gap: 7px; }
+      .seo-row dt { font-weight: 700; }
+      .seo-row dd { margin: 0; color: var(--muted); overflow-wrap: anywhere; }
+      .owner-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+      .owner-button {
+        min-height: 50px;
+        padding: 0 16px;
+        border: 2px solid var(--accent);
+        border-radius: 10px;
+        background: var(--accent);
+        color: var(--accent-text);
+        font-family: "Clear Sans", sans-serif;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .owner-button.secondary { background: transparent; color: var(--accent); }
+      .owner-button:focus-visible { outline: 4px solid var(--focus); outline-offset: 3px; }
+      .share-caption {
+        margin: 0;
+        padding: 16px;
+        border-radius: 10px;
+        background: var(--field);
+        color: var(--ink);
+      }
+      .copy-status { min-height: 1.45em; margin: 12px 0 0; color: var(--muted); font-weight: 700; }
+      .back-section { border-radius: 0 0 22px 22px; }
+
+      @media (min-width: 700px) {
+        .app-info { grid-template-columns: repeat(3, 1fr); }
+      }
+
+      @media (min-width: 800px) {
+        .layout.has-result {
+          width: min(100%, 1000px);
+          display: grid;
+          grid-template-columns: minmax(0, 1.08fr) minmax(340px, 0.92fr);
+        }
+
+        .layout.has-result .calculator { padding-right: 52px; }
+      }
+
+      @media (max-width: 799px) {
+        main { place-items: start center; }
+        .layout { border-radius: 22px; }
+        .result { border-top: 1px solid color-mix(in srgb, var(--result-ink) 24%, transparent); }
+        .result::before,
+        .result::after { top: -11px; bottom: auto; }
+        .result::before { left: -11px; }
+        .result::after { left: auto; right: -11px; }
+      }
+
+      @media (max-width: 430px) {
+        main {
+          padding-right: max(12px, env(safe-area-inset-right));
+          padding-left: max(12px, env(safe-area-inset-left));
+        }
+        .calculator, .result { padding-inline: 22px; }
+        .install-panel { align-items: stretch; flex-direction: column; }
+        .install-button { width: 100%; }
+        h1 { font-size: 2.55rem; }
+        .final-price { font-size: clamp(3.6rem, 19vw, 5.2rem); }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="app-shell">
+      <section class="layout" id="layout" aria-labelledby="page-title">
+        <div class="calculator">
+          <h1 id="page-title">What will you pay?</h1>
+          <p class="intro">Enter the price and the discounts on the tag.</p>
+
+          <form id="calculator-form" novalidate>
+            <div class="field">
+              <div class="label-row">
+                <label for="original-price">Original price</label>
+              </div>
+              <div class="input-wrap" id="original-wrap">
+                <span class="affix" aria-hidden="true">$</span>
+                <input id="original-price" name="original-price" type="number" inputmode="decimal" min="0.01" step="0.01" placeholder="89.00" autocomplete="off" aria-describedby="original-error" required />
+                <span aria-hidden="true"></span>
+              </div>
+              <p class="error" id="original-error" aria-live="polite"></p>
+            </div>
+
+            <div class="field">
+              <div class="label-row">
+                <label for="discount-one">Discount 1</label>
+              </div>
+              <div class="input-wrap" id="discount-one-wrap">
+                <span aria-hidden="true"></span>
+                <input id="discount-one" name="discount-one" type="number" inputmode="decimal" min="0" max="100" step="0.01" placeholder="20" autocomplete="off" aria-describedby="discount-one-error" required />
+                <span class="affix suffix" aria-hidden="true">%</span>
+              </div>
+              <p class="error" id="discount-one-error" aria-live="polite"></p>
+            </div>
+
+            <div class="field">
+              <div class="label-row">
+                <label for="discount-two">Discount 2</label>
+                <span class="optional">Optional</span>
+              </div>
+              <div class="input-wrap" id="discount-two-wrap">
+                <span aria-hidden="true"></span>
+                <input id="discount-two" name="discount-two" type="number" inputmode="decimal" min="0" max="100" step="0.01" placeholder="70" autocomplete="off" aria-describedby="discount-two-error" />
+                <span class="affix suffix" aria-hidden="true">%</span>
+              </div>
+              <p class="error" id="discount-two-error" aria-live="polite"></p>
+            </div>
+
+            <button class="submit" type="submit">Show Final Price</button>
+          </form>
+        </div>
+
+        <aside class="result" id="result" aria-live="polite" aria-atomic="true">
+          <p class="result-label">You pay</p>
+          <output class="final-price" id="final-price">$0.00</output>
+          <p class="saved" id="saved">You saved $0.00</p>
+          <span class="effective" id="effective">0% off in total</span>
+          <div class="price-path" id="price-path" aria-label="Price calculation"></div>
+        </aside>
+      </section>
+
+      <section class="install-panel" id="install-panel" aria-labelledby="install-title">
+        <div class="install-copy">
+          <strong id="install-title">Keep Clear Price on your phone</strong>
+          <p>Open it quickly, even without a connection.</p>
+        </div>
+        <button class="install-button" id="install-button" type="button">How to install</button>
+      </section>
+
+      <section class="install-help" id="install-help" aria-labelledby="install-help-title" tabindex="-1">
+        <h2 id="install-help-title">Add Clear Price to your phone</h2>
+        <p><strong>iPhone or iPad:</strong> Open this page in Safari, tap Share, then tap Add to Home Screen.</p>
+        <p><strong>Android:</strong> Open your browser menu, then tap Install app or Add to Home screen.</p>
+        <button class="dismiss-button" id="dismiss-install-help" type="button">Done</button>
+      </section>
+
+      <footer class="app-info" aria-label="About Clear Price">
+        <section class="info-item">
+          <h2>About</h2>
+          <p>See what you pay after one or two discounts, including stacked discounts.</p>
+        </section>
+        <section class="info-item">
+          <h2>Privacy</h2>
+          <p>Clear Price collects no data. Every calculation happens on your device.</p>
+        </section>
+        <section class="info-item">
+          <h2>Contact</h2>
+          <p>Questions or feedback? Reply to the person or organization that shared this app.</p>
+        </section>
+      </footer>
+      <button class="copyright" id="copyright" type="button">© 2026 Jame Roy. All rights reserved.</button>
+      </div>
+    </main>
+
+    <section class="owner-mode" id="owner-mode" aria-labelledby="owner-title" aria-hidden="true">
+      <div class="owner-inner">
+        <header class="owner-banner">
+          <h1 id="owner-title" tabindex="-1">Owner: Jame Roy. All rights reserved.</h1>
+          <p>The Clear Price idea, name, and design are the property of Jame Roy.</p>
+        </header>
+
+        <section class="owner-section" aria-labelledby="seo-title">
+          <h2 id="seo-title">Live SEO setup</h2>
+          <dl class="seo-list" id="seo-list"></dl>
+          <p class="copy-status" id="copy-status" aria-live="polite"></p>
+        </section>
+
+        <section class="owner-section" aria-labelledby="share-title">
+          <h2 id="share-title">Share kit</h2>
+          <p>Use the app host’s Share control to copy or send the public app link.</p>
+          <p class="share-caption" id="share-caption">Shopping a sale? Clear Price instantly shows the real price after one or two stacked discounts, so you know exactly what you will pay.</p>
+          <div class="owner-actions">
+            <button class="owner-button" type="button" data-copy-target="share-caption" data-copy-label="Share caption">Copy share caption</button>
+          </div>
+        </section>
+
+        <section class="owner-section back-section">
+          <button class="owner-button secondary" id="back-to-app" type="button">Back to app</button>
+        </section>
+      </div>
+    </section>
+
+    <script>
+      (function () {
+        var form = document.getElementById('calculator-form');
+        var layout = document.getElementById('layout');
+        var originalInput = document.getElementById('original-price');
+        var firstInput = document.getElementById('discount-one');
+        var secondInput = document.getElementById('discount-two');
+        var result = document.getElementById('result');
+        var installPanel = document.getElementById('install-panel');
+        var installButton = document.getElementById('install-button');
+        var installHelp = document.getElementById('install-help');
+        var dismissInstallHelp = document.getElementById('dismiss-install-help');
+        var copyright = document.getElementById('copyright');
+        var ownerMode = document.getElementById('owner-mode');
+        var backToApp = document.getElementById('back-to-app');
+        var seoList = document.getElementById('seo-list');
+        var copyStatus = document.getElementById('copy-status');
+        var tapTimes = [];
+        var deferredInstallPrompt = null;
+        var money = new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'USD',
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+
+        function metaContent(selector) {
+          var element = document.querySelector(selector);
+          return element ? element.getAttribute('content') || '' : '';
+        }
+
+        function addSeoRow(label, value) {
+          var row = document.createElement('div');
+          row.className = 'seo-row';
+          var term = document.createElement('dt');
+          term.textContent = label;
+          var description = document.createElement('dd');
+          description.textContent = value;
+          var actions = document.createElement('div');
+          actions.className = 'owner-actions';
+          var button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'owner-button secondary';
+          button.textContent = 'Copy ' + label;
+          button.setAttribute('data-copy-value', value);
+          button.setAttribute('data-copy-label', label);
+          actions.appendChild(button);
+          row.appendChild(term);
+          row.appendChild(description);
+          row.appendChild(actions);
+          seoList.appendChild(row);
+        }
+
+        function populateSeoPanel() {
+          seoList.textContent = '';
+          addSeoRow('Title tag', document.title);
+          addSeoRow('Meta description', metaContent('meta[name="description"]'));
+          addSeoRow('Keywords', metaContent('meta[name="keywords"]'));
+          addSeoRow('Open Graph title', metaContent('meta[property="og:title"]'));
+          addSeoRow('Open Graph description', metaContent('meta[property="og:description"]'));
+          addSeoRow('Open Graph type', metaContent('meta[property="og:type"]'));
+        }
+
+        function openOwnerMode() {
+          populateSeoPanel();
+          ownerMode.classList.add('is-visible');
+          ownerMode.setAttribute('aria-hidden', 'false');
+          document.body.style.overflow = 'hidden';
+          ownerMode.scrollTop = 0;
+          document.getElementById('owner-title').focus({ preventScroll: true });
+        }
+
+        function closeOwnerMode() {
+          ownerMode.classList.remove('is-visible');
+          ownerMode.setAttribute('aria-hidden', 'true');
+          document.body.style.overflow = '';
+          copyright.focus({ preventScroll: true });
+        }
+
+        function copyText(text, label) {
+          if (!navigator.clipboard || !navigator.clipboard.writeText) {
+            copyStatus.textContent = 'Copy is not available in this browser.';
+            return;
+          }
+          navigator.clipboard.writeText(text).then(function () {
+            copyStatus.textContent = label + ' copied.';
+          }).catch(function () {
+            copyStatus.textContent = 'Could not copy. Select the text and copy it manually.';
+          });
+        }
+
+        function setError(input, message) {
+          var wrap = document.getElementById(input.id + '-wrap') || document.getElementById(input.id.replace('original-price', 'original') + '-wrap');
+          var error = document.getElementById(input.id + '-error');
+          input.setAttribute('aria-invalid', message ? 'true' : 'false');
+          if (wrap) wrap.classList.toggle('has-error', Boolean(message));
+          if (error) error.textContent = message;
+        }
+
+        function readNumber(input) {
+          if (input.value.trim() === '') return null;
+          return Number(input.value);
+        }
+
+        function validate() {
+          var original = readNumber(originalInput);
+          var first = readNumber(firstInput);
+          var second = readNumber(secondInput);
+          var valid = true;
+
+          if (original === null || !Number.isFinite(original)) {
+            setError(originalInput, 'Enter the original price.');
+            valid = false;
+          } else if (original <= 0) {
+            setError(originalInput, 'Price must be more than $0.');
+            valid = false;
+          } else {
+            setError(originalInput, '');
+          }
+
+          if (first === null || !Number.isFinite(first)) {
+            setError(firstInput, 'Enter the first discount.');
+            valid = false;
+          } else if (first < 0 || first > 100) {
+            setError(firstInput, 'Use a number from 0 to 100.');
+            valid = false;
+          } else {
+            setError(firstInput, '');
+          }
+
+          if (second === null) {
+            second = 0;
+            setError(secondInput, '');
+          } else if (!Number.isFinite(second) || second < 0 || second > 100) {
+            setError(secondInput, 'Use a number from 0 to 100.');
+            valid = false;
+          } else {
+            setError(secondInput, '');
+          }
+
+          return { valid: valid, original: original, first: first, second: second };
+        }
+
+        function addPathPart(container, className, text) {
+          var span = document.createElement('span');
+          span.className = className;
+          span.textContent = text;
+          container.appendChild(span);
+        }
+
+        form.addEventListener('submit', function (event) {
+          event.preventDefault();
+          var values = validate();
+          if (!values.valid) {
+            var firstInvalid = form.querySelector('[aria-invalid="true"]');
+            if (firstInvalid) firstInvalid.focus();
+            layout.classList.remove('has-result');
+            return;
+          }
+
+          var afterFirst = values.original * (1 - values.first / 100);
+          var final = afterFirst * (1 - values.second / 100);
+          var saved = values.original - final;
+          var totalDiscount = (saved / values.original) * 100;
+
+          document.getElementById('final-price').textContent = money.format(final);
+          document.getElementById('saved').textContent = 'You saved ' + money.format(saved);
+          document.getElementById('effective').textContent = totalDiscount.toFixed(1).replace('.0', '') + '% off in total';
+
+          var path = document.getElementById('price-path');
+          path.textContent = '';
+          addPathPart(path, 'step-price', money.format(values.original));
+          addPathPart(path, 'arrow', '→');
+          addPathPart(path, 'step-discount', values.first + '% off');
+          addPathPart(path, 'arrow', '→');
+          addPathPart(path, 'step-price', money.format(afterFirst));
+          if (values.second > 0) {
+            addPathPart(path, 'arrow', '→');
+            addPathPart(path, 'step-discount', values.second + '% off');
+            addPathPart(path, 'arrow', '→');
+            addPathPart(path, 'step-price', money.format(final));
+          }
+
+          layout.classList.add('has-result');
+          requestAnimationFrame(function () {
+            result.setAttribute('tabindex', '-1');
+            result.focus({ preventScroll: true });
+            result.removeAttribute('tabindex');
+            if (window.innerWidth < 800) result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          });
+        });
+
+        [originalInput, firstInput, secondInput].forEach(function (input) {
+          input.addEventListener('input', function () {
+            setError(input, '');
+            layout.classList.remove('has-result');
+          });
+        });
+
+        window.addEventListener('beforeinstallprompt', function (event) {
+          event.preventDefault();
+          deferredInstallPrompt = event;
+          installButton.textContent = 'Install Clear Price';
+        });
+
+        installButton.addEventListener('click', function () {
+          if (deferredInstallPrompt) {
+            deferredInstallPrompt['prompt']();
+            deferredInstallPrompt.userChoice.then(function () {
+              deferredInstallPrompt = null;
+              installButton.textContent = 'How to install';
+            });
+            return;
+          }
+          installHelp.classList.add('is-visible');
+          installHelp.focus();
+        });
+
+        dismissInstallHelp.addEventListener('click', function () {
+          installHelp.classList.remove('is-visible');
+          installButton.focus();
+        });
+
+        window.addEventListener('appinstalled', function () {
+          deferredInstallPrompt = null;
+          installPanel.hidden = true;
+          installHelp.classList.remove('is-visible');
+        });
+
+        copyright.addEventListener('click', function () {
+          var now = Date.now();
+          tapTimes = tapTimes.filter(function (time) { return now - time < 2200; });
+          tapTimes.push(now);
+          if (tapTimes.length >= 5) {
+            tapTimes = [];
+            openOwnerMode();
+          }
+        });
+
+        ownerMode.addEventListener('click', function (event) {
+          var button = event.target.closest('[data-copy-value], [data-copy-target]');
+          if (!button) return;
+          var value = button.getAttribute('data-copy-value');
+          var targetId = button.getAttribute('data-copy-target');
+          if (targetId) value = document.getElementById(targetId).textContent;
+          copyText(value || '', button.getAttribute('data-copy-label') || 'Text');
+        });
+
+        backToApp.addEventListener('click', closeOwnerMode);
+
+        if (new URLSearchParams(window.location.search).get('owner') === '1') {
+          openOwnerMode();
+        }
+
+        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+          installPanel.hidden = true;
+        }
+
+        if ('serviceWorker' in navigator) {
+          window.addEventListener('load', function () {
+            navigator.serviceWorker.register('./service-worker.js').catch(function () {
+              /* The calculator remains fully usable when service workers are unavailable. */
+            });
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>
