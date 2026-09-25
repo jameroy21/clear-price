@@ -398,6 +398,27 @@
       .install-help p { margin: 8px 0; }
       .dismiss-button { margin-top: 8px; padding: 0 16px; background: transparent; color: var(--accent); }
 
+      .share-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        min-height: 58px;
+        margin-top: 4px;
+        border: 2px solid var(--accent);
+        border-radius: 13px;
+        background: transparent;
+        color: var(--accent);
+        font-family: "Clear Sans", sans-serif;
+        font-size: 1.12rem;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .share-button:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); }
+      .share-button:focus-visible { outline: 4px solid var(--focus); outline-offset: 4px; }
+      .share-button svg { width: 22px; height: 22px; flex: 0 0 auto; }
+
       .app-info {
         padding: 22px;
         border-radius: 16px;
@@ -578,6 +599,10 @@
             </div>
 
             <button class="submit" type="submit">Show Final Price</button>
+            <button class="share-button" id="share-button" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="10.7" x2="15.4" y2="6.3"/><line x1="8.6" y1="13.3" x2="15.4" y2="17.7"/></svg>
+              <span id="share-button-label">Share Clear Price</span>
+            </button>
           </form>
         </div>
 
@@ -663,6 +688,8 @@
         var installButton = document.getElementById('install-button');
         var installHelp = document.getElementById('install-help');
         var dismissInstallHelp = document.getElementById('dismiss-install-help');
+        var shareButton = document.getElementById('share-button');
+        var shareLabel = document.getElementById('share-button-label');
         var copyright = document.getElementById('copyright');
         var ownerMode = document.getElementById('owner-mode');
         var backToApp = document.getElementById('back-to-app');
@@ -872,6 +899,34 @@
         dismissInstallHelp.addEventListener('click', function () {
           installHelp.classList.remove('is-visible');
           installButton.focus();
+        });
+
+        var shareUrl = 'https://jameroy21.github.io/clear-price/';
+
+        function shareDone(message) {
+          shareLabel.textContent = message;
+          setTimeout(function () { shareLabel.textContent = 'Share Clear Price'; }, 2200);
+        }
+
+        shareButton.addEventListener('click', function () {
+          var shareData = {
+            title: 'Clear Price',
+            text: 'Shopping a sale? Clear Price shows the real price after one or two stacked discounts.',
+            url: shareUrl
+          };
+          if (navigator.share) {
+            navigator.share(shareData).catch(function () { /* user dismissed the sheet */ });
+            return;
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(shareUrl).then(function () {
+              shareDone('Link copied');
+            }).catch(function () {
+              window.prompt('Copy the Clear Price link:', shareUrl);
+            });
+            return;
+          }
+          window.prompt('Copy the Clear Price link:', shareUrl);
         });
 
         window.addEventListener('appinstalled', function () {
