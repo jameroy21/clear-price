@@ -2,7 +2,7 @@
   "id": "./app.html",
   "name": "Clear Price",
   "short_name": "Clear Price",
-  "description": "See the final price after one or two stacked discounts.",
+  "description": "See the final price after stacked discounts.",
   "start_url": "./app.html",
   "scope": "./",
   "display": "standalone",

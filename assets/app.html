@@ -4,17 +4,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
-    <meta name="description" content="Calculate the real sale price after one or two stacked discounts. Clear Price shows what you pay and how much you save." />
+    <meta name="description" content="Calculate the real sale price after stacked discounts. Clear Price shows what you pay and how much you save." />
     <meta name="keywords" content="stacked discount calculator, discount calculator, sale price calculator" />
     <meta name="referrer" content="no-referrer" />
     <link rel="canonical" href="../" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Clear Price" />
     <meta property="og:title" content="Clear Price: Stacked Discount Calculator" />
-    <meta property="og:description" content="Calculate the real sale price after one or two stacked discounts. See what you pay and how much you save." />
+    <meta property="og:description" content="Calculate the real sale price after stacked discounts. See what you pay and how much you save." />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="Clear Price: Stacked Discount Calculator" />
-    <meta name="twitter:description" content="Calculate the real sale price after one or two stacked discounts. See what you pay and how much you save." />
+    <meta name="twitter:description" content="Calculate the real sale price after stacked discounts. See what you pay and how much you save." />
     <meta name="theme-color" content="#f2f6f4" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#101614" media="(prefers-color-scheme: dark)" />
     <meta name="mobile-web-app-capable" content="yes" />
@@ -31,7 +31,7 @@
         "@type": "SoftwareApplication",
         "name": "Clear Price",
         "alternateName": "Clear Price: Stacked Discount Calculator",
-        "description": "Calculate the real sale price after one or two stacked discounts. Clear Price shows what you pay and how much you save.",
+        "description": "Calculate the real sale price after stacked discounts. Clear Price shows what you pay and how much you save.",
         "applicationCategory": "FinanceApplication",
         "operatingSystem": "Any",
         "isAccessibleForFree": true,
@@ -550,98 +550,241 @@
       @media (prefers-reduced-motion: reduce) {
         *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
       }
+      /* ---- v2: cart, language, currency ---- */
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+      }
+      .lang-toggle {
+        display: flex;
+        border: 2px solid var(--line);
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .lang-toggle button {
+        border: 0;
+        background: transparent;
+        color: var(--muted);
+        font-family: "Clear Sans", sans-serif;
+        font-size: 1rem;
+        font-weight: 700;
+        padding: 12px 20px;
+        min-height: 50px;
+        cursor: pointer;
+      }
+      .lang-toggle button[aria-pressed="true"] {
+        background: var(--accent);
+        color: var(--accent-text);
+      }
+      .lang-toggle button:focus-visible { outline: 4px solid var(--focus); outline-offset: -4px; }
+      .currency-wrap {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .currency-wrap label { font-size: 1rem; font-weight: 700; }
+      .currency-select {
+        font-family: "Clear Sans", sans-serif;
+        font-size: 1rem;
+        font-weight: 700;
+        min-height: 50px;
+        padding: 10px 12px;
+        border: 2px solid var(--line);
+        border-radius: 12px;
+        background: var(--field);
+        color: var(--ink);
+      }
+      .currency-select:focus-visible { outline: 4px solid var(--focus); outline-offset: 3px; }
+      .cart-wrap { display: grid; gap: 16px; }
+      .cart { display: grid; gap: 16px; }
+      .item-card {
+        display: grid;
+        gap: 14px;
+        padding: 18px;
+        border: 2px solid var(--line);
+        border-radius: 18px;
+        background: var(--surface);
+      }
+      .item-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .item-title {
+        margin: 0;
+        font-family: "Clear Sans", sans-serif;
+        font-size: 1.18rem;
+        letter-spacing: -0.01em;
+      }
+      .remove-item {
+        border: 2px solid var(--line);
+        border-radius: 999px;
+        background: transparent;
+        color: var(--muted);
+        font-family: "Clear Sans", sans-serif;
+        font-size: 1rem;
+        font-weight: 700;
+        padding: 10px 16px;
+        min-height: 50px;
+        cursor: pointer;
+      }
+      .remove-item:hover { color: var(--error); border-color: var(--error); }
+      .remove-item:focus-visible { outline: 4px solid var(--focus); outline-offset: 3px; }
+      .add-item {
+        width: 100%;
+        min-height: 64px;
+        border: 2px dashed var(--line);
+        border-radius: 13px;
+        background: transparent;
+        color: var(--accent);
+        font-family: "Clear Sans", sans-serif;
+        font-size: 1.12rem;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .add-item:hover { border-color: var(--accent); }
+      .add-item:focus-visible { outline: 4px solid var(--focus); outline-offset: 3px; }
+      .item-result {
+        border-radius: 13px;
+        background: var(--result);
+        color: var(--result-ink);
+        padding: 16px 18px;
+      }
+      .item-result .you-pay {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 700;
+      }
+      .item-result .pay-amount {
+        margin: 2px 0 0;
+        font-family: "Clear Sans", sans-serif;
+        font-size: 2.2rem;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        overflow-wrap: anywhere;
+      }
+      .item-result .saved-line {
+        margin: 10px 0 0;
+        font-size: 1.06rem;
+        font-weight: 700;
+      }
+      .item-path {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px;
+        margin-top: 10px;
+        font-size: 1rem;
+        font-weight: 700;
+      }
+      .total-bar {
+        position: sticky;
+        bottom: 0;
+        z-index: 5;
+        width: min(100%, 640px);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        border-radius: 18px;
+        background: var(--ink);
+        color: var(--page);
+        box-shadow: var(--shadow);
+        padding: 16px 20px calc(16px + env(safe-area-inset-bottom));
+      }
+      .total-label { margin: 0; font-size: 1rem; font-weight: 700; }
+      .total-amount {
+        margin: 0;
+        font-family: "Clear Sans", sans-serif;
+        font-size: 2rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        overflow-wrap: anywhere;
+        text-align: right;
+      }
+      .total-saved { margin: 4px 0 0; font-size: 1rem; font-weight: 700; opacity: 0.85; }
+
     </style>
   </head>
   <body>
     <main>
       <div class="app-shell">
-      <section class="layout" id="layout" aria-labelledby="page-title">
+            <section class="layout" id="layout" aria-labelledby="page-title">
         <div class="calculator">
-          <h1 id="page-title">What will you pay?</h1>
-          <p class="intro">Enter the price and the discounts on the tag.</p>
-
-          <form id="calculator-form" novalidate>
-            <div class="field">
-              <div class="label-row">
-                <label for="original-price">Original price</label>
-              </div>
-              <div class="input-wrap" id="original-wrap">
-                <span class="affix" aria-hidden="true">$</span>
-                <input id="original-price" name="original-price" type="number" inputmode="decimal" min="0.01" step="0.01" placeholder="89.00" autocomplete="off" aria-describedby="original-error" required />
-                <span aria-hidden="true"></span>
-              </div>
-              <p class="error" id="original-error" aria-live="polite"></p>
+          <div class="topbar">
+            <div class="lang-toggle" role="group" id="lang-group" aria-label="Language">
+              <button type="button" id="lang-en" aria-pressed="true">EN</button>
+              <button type="button" id="lang-es" aria-pressed="false">ES</button>
             </div>
-
-            <div class="field">
-              <div class="label-row">
-                <label for="discount-one">Discount 1</label>
-              </div>
-              <div class="input-wrap" id="discount-one-wrap">
-                <span aria-hidden="true"></span>
-                <input id="discount-one" name="discount-one" type="number" inputmode="decimal" min="0" max="100" step="0.01" placeholder="20" autocomplete="off" aria-describedby="discount-one-error" required />
-                <span class="affix suffix" aria-hidden="true">%</span>
-              </div>
-              <p class="error" id="discount-one-error" aria-live="polite"></p>
+            <div class="currency-wrap">
+              <label for="currency-select" data-i18n="currency">Currency</label>
+              <select class="currency-select" id="currency-select">
+                <option value="USD">$ USD</option>
+                <option value="INR">₹ INR</option>
+                <option value="CAD">C$ CAD</option>
+                <option value="TWD">NT$ TWD</option>
+              </select>
             </div>
+          </div>
 
-            <div class="field">
-              <div class="label-row">
-                <label for="discount-two">Discount 2</label>
-                <span class="optional">Optional</span>
-              </div>
-              <div class="input-wrap" id="discount-two-wrap">
-                <span aria-hidden="true"></span>
-                <input id="discount-two" name="discount-two" type="number" inputmode="decimal" min="0" max="100" step="0.01" placeholder="70" autocomplete="off" aria-describedby="discount-two-error" />
-                <span class="affix suffix" aria-hidden="true">%</span>
-              </div>
-              <p class="error" id="discount-two-error" aria-live="polite"></p>
-            </div>
+          <h1 id="page-title" data-i18n="title">What will you pay?</h1>
+          <p class="intro" data-i18n="intro">Enter the price and the discounts on the tag.</p>
 
-            <button class="submit" type="submit">Show Final Price</button>
+          <div class="cart-wrap">
+            <div class="cart" id="cart"></div>
+            <button class="add-item" id="add-item" type="button" data-i18n="addItem">+ Add item</button>
+          </div>
+
+          <div style="margin-top: 18px;">
             <button class="share-button" id="share-button" type="button">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="10.7" x2="15.4" y2="6.3"/><line x1="8.6" y1="13.3" x2="15.4" y2="17.7"/></svg>
-              <span id="share-button-label">Share Clear Price</span>
+              <span id="share-button-label" data-i18n="share">Share Clear Price</span>
             </button>
-          </form>
+          </div>
         </div>
-
-        <aside class="result" id="result" aria-live="polite" aria-atomic="true">
-          <p class="result-label">You pay</p>
-          <output class="final-price" id="final-price">$0.00</output>
-          <p class="saved" id="saved">You saved $0.00</p>
-          <span class="effective" id="effective">0% off in total</span>
-          <div class="price-path" id="price-path" aria-label="Price calculation"></div>
-        </aside>
       </section>
+
+      <div class="total-bar" id="total-bar" aria-live="polite" aria-atomic="true">
+        <div>
+          <p class="total-label" data-i18n="total">Total</p>
+          <p class="total-saved" id="total-saved"></p>
+        </div>
+        <p class="total-amount" id="total-amount">$0.00</p>
+      </div>
+
 
       <section class="install-panel" id="install-panel" aria-labelledby="install-title">
         <div class="install-copy">
-          <strong id="install-title">Keep Clear Price on your phone</strong>
-          <p>Open it quickly, even without a connection.</p>
+          <strong id="install-title" data-i18n="installTitle">Keep Clear Price on your phone</strong>
+          <p data-i18n="installSub">Open it quickly, even without a connection.</p>
         </div>
-        <button class="install-button" id="install-button" type="button">How to install</button>
+        <button class="install-button" id="install-button" type="button" data-i18n="installCta">How to install</button>
       </section>
 
       <section class="install-help" id="install-help" aria-labelledby="install-help-title" tabindex="-1">
-        <h2 id="install-help-title">Add Clear Price to your phone</h2>
-        <p><strong>iPhone or iPad:</strong> Open this page in Safari, tap Share, then tap Add to Home Screen.</p>
-        <p><strong>Android:</strong> Open your browser menu, then tap Install app or Add to Home screen.</p>
-        <button class="dismiss-button" id="dismiss-install-help" type="button">Done</button>
+        <h2 id="install-help-title" data-i18n="installHelpTitle">Add Clear Price to your phone</h2>
+        <p data-i18n="installIos">iPhone or iPad: open this page in Safari, tap Share, then tap Add to Home Screen.</p>
+        <p data-i18n="installAndroid">Android: open your browser menu, then tap Install app or Add to Home screen.</p>
+        <button class="dismiss-button" id="dismiss-install-help" type="button" data-i18n="done">Done</button>
       </section>
 
       <footer class="app-info" aria-label="About Clear Price">
         <section class="info-item">
-          <h2>About</h2>
-          <p>See what you pay after one or two discounts, including stacked discounts.</p>
+          <h2 data-i18n="aboutH">About</h2>
+          <p data-i18n="aboutP">See what you pay after stacked discounts, for one item or a whole cart.</p>
         </section>
         <section class="info-item">
-          <h2>Privacy</h2>
-          <p>Clear Price collects no data. Every calculation happens on your device.</p>
+          <h2 data-i18n="privacyH">Privacy</h2>
+          <p data-i18n="privacyP">Clear Price collects no data. Every calculation happens on your device.</p>
         </section>
         <section class="info-item">
-          <h2>Contact</h2>
-          <p>Questions or feedback? Reply to the person or organization that shared this app.</p>
+          <h2 data-i18n="contactH">Contact</h2>
+          <p data-i18n="contactP">Questions or feedback? Reply to the person or organization that shared this app.</p>
         </section>
       </footer>
       <button class="copyright" id="copyright" type="button">© 2026 Jame Roy. All rights reserved.</button>
@@ -664,7 +807,7 @@
         <section class="owner-section" aria-labelledby="share-title">
           <h2 id="share-title">Share kit</h2>
           <p>Use the app host’s Share control to copy or send the public app link.</p>
-          <p class="share-caption" id="share-caption">Shopping a sale? Clear Price instantly shows the real price after one or two stacked discounts, so you know exactly what you will pay.</p>
+          <p class="share-caption" id="share-caption">Shopping a sale? Clear Price instantly shows the real price after stacked discounts, so you know exactly what you will pay.</p>
           <div class="owner-actions">
             <button class="owner-button" type="button" data-copy-target="share-caption" data-copy-label="Share caption">Copy share caption</button>
           </div>
@@ -678,12 +821,444 @@
 
     <script>
       (function () {
-        var form = document.getElementById('calculator-form');
-        var layout = document.getElementById('layout');
-        var originalInput = document.getElementById('original-price');
-        var firstInput = document.getElementById('discount-one');
-        var secondInput = document.getElementById('discount-two');
-        var result = document.getElementById('result');
+        'use strict';
+
+        /* ================= i18n ================= */
+        var STRINGS = {
+          en: {
+            docTitle: 'Clear Price: Stacked Discount Calculator',
+            title: 'What will you pay?',
+            intro: 'Enter the price and the discounts on the tag.',
+            currency: 'Currency',
+            language: 'Language',
+            addItem: '+ Add item',
+            item: 'Item',
+            itemName: 'Item name',
+            itemNamePh: 'Name (optional)',
+            optional: 'Optional',
+            originalPrice: 'Original price',
+            discount: 'Discount',
+            remove: 'Remove',
+            removeItem: 'Remove this item',
+            youPay: 'You pay',
+            youSaved: 'You saved',
+            offTotal: '% off in total',
+            total: 'Total',
+            totalSaved: 'You saved {x} in total',
+            emptyCart: 'Add an item to start.',
+            share: 'Share Clear Price',
+            linkCopied: 'Link copied',
+            shareText: 'Shopping a sale? Clear Price shows the real price after stacked discounts.',
+            errPrice: 'Enter the original price.',
+            errDiscount: 'Use a number from 0 to 100.',
+            installTitle: 'Keep Clear Price on your phone',
+            installSub: 'Open it quickly, even without a connection.',
+            installCta: 'How to install',
+            installNow: 'Install Clear Price',
+            installHelpTitle: 'Add Clear Price to your phone',
+            installIos: 'iPhone or iPad: open this page in Safari, tap Share, then tap Add to Home Screen.',
+            installAndroid: 'Android: open your browser menu, then tap Install app or Add to Home screen.',
+            done: 'Done',
+            aboutH: 'About',
+            aboutP: 'See what you pay after stacked discounts, for one item or a whole cart.',
+            privacyH: 'Privacy',
+            privacyP: 'Clear Price collects no data. Every calculation happens on your device.',
+            contactH: 'Contact',
+            contactP: 'Questions or feedback? Reply to the person or organization that shared this app.'
+          },
+          es: {
+            docTitle: 'Clear Price: Calculadora de descuentos acumulados',
+            title: '¿Cuánto pagarás?',
+            intro: 'Escribe el precio y los descuentos de la etiqueta.',
+            currency: 'Moneda',
+            language: 'Idioma',
+            addItem: '+ Agregar artículo',
+            item: 'Artículo',
+            itemName: 'Nombre del artículo',
+            itemNamePh: 'Nombre (opcional)',
+            optional: 'Opcional',
+            originalPrice: 'Precio original',
+            discount: 'Descuento',
+            remove: 'Quitar',
+            removeItem: 'Quitar este artículo',
+            youPay: 'Pagas',
+            youSaved: 'Ahorraste',
+            offTotal: '% de descuento en total',
+            total: 'Total',
+            totalSaved: 'Ahorraste {x} en total',
+            emptyCart: 'Agrega un artículo para empezar.',
+            share: 'Compartir Clear Price',
+            linkCopied: 'Enlace copiado',
+            shareText: '¿De compras? Clear Price muestra el precio real después de descuentos acumulados.',
+            errPrice: 'Escribe el precio original.',
+            errDiscount: 'Usa un número del 0 al 100.',
+            installTitle: 'Guarda Clear Price en tu teléfono',
+            installSub: 'Ábrelo rápido, incluso sin conexión.',
+            installCta: 'Cómo instalar',
+            installNow: 'Instalar Clear Price',
+            installHelpTitle: 'Agrega Clear Price a tu teléfono',
+            installIos: 'iPhone o iPad: abre esta página en Safari, toca Compartir y luego toca Agregar a pantalla de inicio.',
+            installAndroid: 'Android: abre el menú de tu navegador y toca Instalar app o Agregar a pantalla de inicio.',
+            done: 'Listo',
+            aboutH: 'Acerca de',
+            aboutP: 'Mira lo que pagas después de descuentos acumulados, por un artículo o todo el carrito.',
+            privacyH: 'Privacidad',
+            privacyP: 'Clear Price no recopila datos. Todo cálculo ocurre en tu dispositivo.',
+            contactH: 'Contacto',
+            contactP: '¿Preguntas o comentarios? Responde a la persona u organización que compartió esta app.'
+          }
+        };
+
+        var CURRENCIES = {
+          USD: { symbol: '$' },
+          INR: { symbol: '₹' },
+          CAD: { symbol: 'C$' },
+          TWD: { symbol: 'NT$' }
+        };
+
+        var LS_CART = 'cp_cart_v2';
+        var LS_CUR = 'cp_currency';
+        var LS_LANG = 'cp_lang';
+
+        var state = { lang: 'en', currency: 'USD', cart: [] };
+
+        function t(key) {
+          var d = STRINGS[state.lang] || STRINGS.en;
+          return d[key] !== undefined ? d[key] : STRINGS.en[key];
+        }
+
+        function blankItem() {
+          return { name: '', price: '', d: ['', '', ''] };
+        }
+
+        function normalizeItem(raw) {
+          var it = blankItem();
+          if (raw && typeof raw === 'object') {
+            if (typeof raw.name === 'string') it.name = raw.name.slice(0, 60);
+            if (typeof raw.price === 'string') it.price = raw.price.slice(0, 20);
+            if (Array.isArray(raw.d)) {
+              for (var i = 0; i < 3; i++) {
+                if (typeof raw.d[i] === 'string') it.d[i] = raw.d[i].slice(0, 10);
+              }
+            }
+          }
+          return it;
+        }
+
+        function detectCurrency() {
+          var l = (navigator.language || 'en').toLowerCase();
+          if (l.indexOf('en-in') === 0 || l.indexOf('hi') === 0) return 'INR';
+          if (l.indexOf('en-ca') === 0 || l.indexOf('fr-ca') === 0) return 'CAD';
+          if (l.indexOf('zh-tw') === 0) return 'TWD';
+          return 'USD';
+        }
+
+        function loadState() {
+          try {
+            var c = localStorage.getItem(LS_CUR);
+            state.currency = (c && CURRENCIES[c]) ? c : detectCurrency();
+            var l = localStorage.getItem(LS_LANG);
+            if (l === 'en' || l === 'es') {
+              state.lang = l;
+            } else {
+              state.lang = (navigator.language || 'en').toLowerCase().indexOf('es') === 0 ? 'es' : 'en';
+            }
+            var cart = JSON.parse(localStorage.getItem(LS_CART) || 'null');
+            if (Array.isArray(cart) && cart.length) {
+              state.cart = cart.map(normalizeItem);
+            } else {
+              state.cart = [blankItem()];
+            }
+          } catch (e) {
+            state.cart = [blankItem()];
+          }
+        }
+
+        function saveState() {
+          try {
+            localStorage.setItem(LS_CUR, state.currency);
+            localStorage.setItem(LS_LANG, state.lang);
+            localStorage.setItem(LS_CART, JSON.stringify(state.cart));
+          } catch (e) { /* private mode: the app still works, it just will not remember */ }
+        }
+
+        function money(n) {
+          var sym = CURRENCIES[state.currency].symbol;
+          var num = Number(n);
+          if (!isFinite(num)) num = 0;
+          return sym + num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function fmtPct(p) {
+          var r = Math.round(p * 10) / 10;
+          return String(r).replace(/\.0$/, '');
+        }
+
+        function debounce(fn, ms) {
+          var id = null;
+          return function () {
+            var self = this, args = arguments;
+            if (id) clearTimeout(id);
+            id = setTimeout(function () { id = null; fn.apply(self, args); }, ms);
+          };
+        }
+
+        function esc(s) {
+          return String(s)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+        }
+
+        /* ================= calculator core ================= */
+        function calcItem(it) {
+          var price = parseFloat(it.price);
+          if (it.price.trim() === '') return { ok: false, priceBad: false, badDiscount: -1 };
+          if (!isFinite(price) || price <= 0) return { ok: false, priceBad: true, badDiscount: -1 };
+          var discounts = [];
+          for (var i = 0; i < 3; i++) {
+            var raw = (it.d[i] || '').trim();
+            if (raw === '') break;
+            var d = parseFloat(raw);
+            if (!isFinite(d) || d < 0 || d > 100) return { ok: false, priceBad: false, badDiscount: i };
+            discounts.push(d);
+          }
+          var steps = [price];
+          var cur = price;
+          discounts.forEach(function (d) { cur = cur * (1 - d / 100); steps.push(cur); });
+          return {
+            ok: true,
+            final: cur,
+            saved: price - cur,
+            pct: (price - cur) / price * 100,
+            steps: steps,
+            discounts: discounts
+          };
+        }
+
+        /* ================= DOM ================= */
+        var cartEl = document.getElementById('cart');
+        var addItemBtn = document.getElementById('add-item');
+        var totalAmountEl = document.getElementById('total-amount');
+        var totalSavedEl = document.getElementById('total-saved');
+        var currencySelect = document.getElementById('currency-select');
+        var langEnBtn = document.getElementById('lang-en');
+        var langEsBtn = document.getElementById('lang-es');
+        var langGroup = document.getElementById('lang-group');
+        var cardRefs = [];
+
+        function applyStaticI18n() {
+          var nodes = document.querySelectorAll('[data-i18n]');
+          for (var i = 0; i < nodes.length; i++) {
+            nodes[i].textContent = t(nodes[i].getAttribute('data-i18n'));
+          }
+          var phs = document.querySelectorAll('[data-i18n-ph]');
+          for (var j = 0; j < phs.length; j++) {
+            phs[j].setAttribute('placeholder', t(phs[j].getAttribute('data-i18n-ph')));
+          }
+          document.documentElement.lang = state.lang;
+          document.title = t('docTitle');
+          langEnBtn.setAttribute('aria-pressed', state.lang === 'en' ? 'true' : 'false');
+          langEsBtn.setAttribute('aria-pressed', state.lang === 'es' ? 'true' : 'false');
+          langGroup.setAttribute('aria-label', t('language'));
+        }
+
+        function discountFieldHTML(i, k) {
+          var hidden = k > 1 ? ' hidden' : '';
+          var optional = k > 1 ? '<span class="optional">' + esc(t('optional')) + '</span>' : '';
+          var ph = k === 1 ? '20' : (k === 2 ? '70' : '10');
+          return '' +
+            '<div class="field" data-dfield="' + k + '"' + hidden + '>' +
+              '<div class="label-row"><label for="d' + k + '-' + i + '">' + esc(t('discount')) + ' ' + k + '</label>' + optional + '</div>' +
+              '<div class="input-wrap" data-wrap="d' + k + '">' +
+                '<span aria-hidden="true"></span>' +
+                '<input id="d' + k + '-' + i + '" data-act="d' + k + '" type="number" inputmode="decimal" min="0" max="100" step="0.01" placeholder="' + ph + '" autocomplete="off" value="' + esc(state.cart[i].d[k - 1]) + '">' +
+                '<span class="affix suffix" aria-hidden="true">%</span>' +
+              '</div>' +
+              '<p class="error" data-err="d' + k + '" aria-live="polite"></p>' +
+            '</div>';
+        }
+
+        function renderCart() {
+          cartEl.textContent = '';
+          cardRefs = [];
+          if (!state.cart.length) {
+            var p = document.createElement('p');
+            p.className = 'intro';
+            p.textContent = t('emptyCart');
+            cartEl.appendChild(p);
+            return;
+          }
+          var sym = CURRENCIES[state.currency].symbol;
+          state.cart.forEach(function (it, i) {
+            var card = document.createElement('article');
+            card.className = 'item-card';
+            card.setAttribute('data-index', String(i));
+            card.innerHTML =
+              '<div class="item-head">' +
+                '<h2 class="item-title">' + esc(t('item')) + ' ' + (i + 1) + '</h2>' +
+                '<button class="remove-item" type="button" data-act="remove" aria-label="' + esc(t('removeItem')) + '">' + esc(t('remove')) + '</button>' +
+              '</div>' +
+              '<div class="field">' +
+                '<div class="label-row"><label for="name-' + i + '">' + esc(t('itemName')) + '</label><span class="optional">' + esc(t('optional')) + '</span></div>' +
+                '<div class="input-wrap"><span aria-hidden="true"></span>' +
+                '<input id="name-' + i + '" data-act="name" type="text" placeholder="' + esc(t('itemNamePh')) + '" autocomplete="off" maxlength="60" value="' + esc(it.name) + '">' +
+                '<span aria-hidden="true"></span></div>' +
+              '</div>' +
+              '<div class="field">' +
+                '<div class="label-row"><label for="price-' + i + '">' + esc(t('originalPrice')) + '</label></div>' +
+                '<div class="input-wrap" data-wrap="price"><span class="affix" data-affix aria-hidden="true">' + esc(sym) + '</span>' +
+                '<input id="price-' + i + '" data-act="price" type="number" inputmode="decimal" min="0" step="0.01" placeholder="89.00" autocomplete="off" value="' + esc(it.price) + '">' +
+                '<span aria-hidden="true"></span></div>' +
+                '<p class="error" data-err="price" aria-live="polite"></p>' +
+              '</div>' +
+              discountFieldHTML(i, 1) +
+              discountFieldHTML(i, 2) +
+              discountFieldHTML(i, 3) +
+              '<div class="item-result" aria-live="polite" aria-atomic="true">' +
+                '<p class="you-pay">' + esc(t('youPay')) + '</p>' +
+                '<p class="pay-amount" data-out="pay">' + esc(money(0)) + '</p>' +
+                '<p class="saved-line" data-out="saved"></p>' +
+                '<div class="item-path" data-out="path"></div>' +
+              '</div>';
+            cartEl.appendChild(card);
+            var q = function (sel) { return card.querySelector(sel); };
+            cardRefs.push({
+              root: card,
+              dFields: [q('[data-dfield="1"]'), q('[data-dfield="2"]'), q('[data-dfield="3"]')],
+              wraps: { price: q('[data-wrap="price"]'), d1: q('[data-wrap="d1"]'), d2: q('[data-wrap="d2"]'), d3: q('[data-wrap="d3"]') },
+              errs: { price: q('[data-err="price"]'), d1: q('[data-err="d1"]'), d2: q('[data-err="d2"]'), d3: q('[data-err="d3"]') },
+              payEl: q('[data-out="pay"]'),
+              savedEl: q('[data-out="saved"]'),
+              pathEl: q('[data-out="path"]')
+            });
+          });
+        }
+
+        function setFieldError(ref, key, message) {
+          var wrapKey = key === 'price' ? 'price' : key;
+          var wrap = ref.wraps[wrapKey];
+          var err = ref.errs[key];
+          if (wrap) wrap.classList.toggle('has-error', Boolean(message));
+          if (err) err.textContent = message || '';
+        }
+
+        function addPathPart(container, className, text) {
+          var span = document.createElement('span');
+          span.className = className;
+          span.textContent = text;
+          container.appendChild(span);
+        }
+
+        function renderPath(box, r) {
+          box.textContent = '';
+          addPathPart(box, 'step-price', money(r.steps[0]));
+          r.discounts.forEach(function (d, idx) {
+            addPathPart(box, 'arrow', '→');
+            addPathPart(box, 'step-discount', String(d).replace(/\.0+$/, '') + '% off');
+            addPathPart(box, 'arrow', '→');
+            addPathPart(box, 'step-price', money(r.steps[idx + 1]));
+          });
+        }
+
+        function updateCalculations() {
+          var grandPay = 0, grandSaved = 0, anyOk = false;
+          cardRefs.forEach(function (ref, i) {
+            var it = state.cart[i];
+            var r = calcItem(it);
+            var d1v = (it.d[0] || '').trim() !== '';
+            var d2v = (it.d[1] || '').trim() !== '';
+            ref.dFields[1].hidden = !d1v;
+            ref.dFields[2].hidden = !(d1v && d2v);
+            setFieldError(ref, 'price', r.priceBad ? t('errPrice') : '');
+            setFieldError(ref, 'd1', r.badDiscount === 0 ? t('errDiscount') : '');
+            setFieldError(ref, 'd2', r.badDiscount === 1 ? t('errDiscount') : '');
+            setFieldError(ref, 'd3', r.badDiscount === 2 ? t('errDiscount') : '');
+            if (r.ok) {
+              anyOk = true;
+              grandPay += r.final;
+              grandSaved += r.saved;
+              ref.payEl.textContent = money(r.final);
+              ref.savedEl.textContent = t('youSaved') + ' ' + money(r.saved) + ' · ' + fmtPct(r.pct) + t('offTotal');
+              renderPath(ref.pathEl, r);
+            } else {
+              ref.payEl.textContent = money(0);
+              ref.savedEl.textContent = '';
+              ref.pathEl.textContent = '';
+            }
+          });
+          totalAmountEl.textContent = money(grandPay);
+          totalSavedEl.textContent = anyOk ? t('totalSaved').replace('{x}', money(grandSaved)) : '';
+        }
+
+        var scheduleUpdate = debounce(function () {
+          updateCalculations();
+          saveState();
+        }, 150);
+
+        cartEl.addEventListener('input', function (e) {
+          var act = e.target.getAttribute && e.target.getAttribute('data-act');
+          if (!act) return;
+          var card = e.target.closest('.item-card');
+          if (!card) return;
+          var it = state.cart[Number(card.getAttribute('data-index'))];
+          if (!it) return;
+          if (act === 'name') it.name = e.target.value.slice(0, 60);
+          else if (act === 'price') it.price = e.target.value.slice(0, 20);
+          else if (act === 'd1') it.d[0] = e.target.value.slice(0, 10);
+          else if (act === 'd2') it.d[1] = e.target.value.slice(0, 10);
+          else if (act === 'd3') it.d[2] = e.target.value.slice(0, 10);
+          scheduleUpdate();
+        });
+
+        cartEl.addEventListener('click', function (e) {
+          var btn = e.target.closest ? e.target.closest('[data-act="remove"]') : null;
+          if (!btn) return;
+          var card = btn.closest('.item-card');
+          if (!card) return;
+          state.cart.splice(Number(card.getAttribute('data-index')), 1);
+          renderCart();
+          updateCalculations();
+          saveState();
+          addItemBtn.focus({ preventScroll: true });
+        });
+
+        addItemBtn.addEventListener('click', function () {
+          state.cart.push(blankItem());
+          renderCart();
+          updateCalculations();
+          saveState();
+          var cards = cartEl.querySelectorAll('.item-card');
+          var last = cards[cards.length - 1];
+          if (last) {
+            var input = last.querySelector('[data-act="price"]');
+            if (input) input.focus({ preventScroll: false });
+          }
+        });
+
+        function applyLanguage(lang) {
+          state.lang = lang;
+          applyStaticI18n();
+          renderCart();
+          updateCalculations();
+          saveState();
+        }
+
+        langEnBtn.addEventListener('click', function () { applyLanguage('en'); });
+        langEsBtn.addEventListener('click', function () { applyLanguage('es'); });
+
+        currencySelect.addEventListener('change', function () {
+          if (!CURRENCIES[currencySelect.value]) return;
+          state.currency = currencySelect.value;
+          var sym = CURRENCIES[state.currency].symbol;
+          var affixes = document.querySelectorAll('[data-affix]');
+          for (var i = 0; i < affixes.length; i++) affixes[i].textContent = sym;
+          updateCalculations();
+          saveState();
+        });
+
+        /* ================= preserved: install / share / owner ================= */
         var installPanel = document.getElementById('install-panel');
         var installButton = document.getElementById('install-button');
         var installHelp = document.getElementById('install-help');
@@ -697,12 +1272,6 @@
         var copyStatus = document.getElementById('copy-status');
         var tapTimes = [];
         var deferredInstallPrompt = null;
-        var money = new Intl.NumberFormat('en-US', {
-          style: 'currency',
-          currency: 'USD',
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        });
 
         function metaContent(selector) {
           var element = document.querySelector(selector);
@@ -769,118 +1338,10 @@
           });
         }
 
-        function setError(input, message) {
-          var wrap = document.getElementById(input.id + '-wrap') || document.getElementById(input.id.replace('original-price', 'original') + '-wrap');
-          var error = document.getElementById(input.id + '-error');
-          input.setAttribute('aria-invalid', message ? 'true' : 'false');
-          if (wrap) wrap.classList.toggle('has-error', Boolean(message));
-          if (error) error.textContent = message;
-        }
-
-        function readNumber(input) {
-          if (input.value.trim() === '') return null;
-          return Number(input.value);
-        }
-
-        function validate() {
-          var original = readNumber(originalInput);
-          var first = readNumber(firstInput);
-          var second = readNumber(secondInput);
-          var valid = true;
-
-          if (original === null || !Number.isFinite(original)) {
-            setError(originalInput, 'Enter the original price.');
-            valid = false;
-          } else if (original <= 0) {
-            setError(originalInput, 'Price must be more than $0.');
-            valid = false;
-          } else {
-            setError(originalInput, '');
-          }
-
-          if (first === null || !Number.isFinite(first)) {
-            setError(firstInput, 'Enter the first discount.');
-            valid = false;
-          } else if (first < 0 || first > 100) {
-            setError(firstInput, 'Use a number from 0 to 100.');
-            valid = false;
-          } else {
-            setError(firstInput, '');
-          }
-
-          if (second === null) {
-            second = 0;
-            setError(secondInput, '');
-          } else if (!Number.isFinite(second) || second < 0 || second > 100) {
-            setError(secondInput, 'Use a number from 0 to 100.');
-            valid = false;
-          } else {
-            setError(secondInput, '');
-          }
-
-          return { valid: valid, original: original, first: first, second: second };
-        }
-
-        function addPathPart(container, className, text) {
-          var span = document.createElement('span');
-          span.className = className;
-          span.textContent = text;
-          container.appendChild(span);
-        }
-
-        form.addEventListener('submit', function (event) {
-          event.preventDefault();
-          var values = validate();
-          if (!values.valid) {
-            var firstInvalid = form.querySelector('[aria-invalid="true"]');
-            if (firstInvalid) firstInvalid.focus();
-            layout.classList.remove('has-result');
-            return;
-          }
-
-          var afterFirst = values.original * (1 - values.first / 100);
-          var final = afterFirst * (1 - values.second / 100);
-          var saved = values.original - final;
-          var totalDiscount = (saved / values.original) * 100;
-
-          document.getElementById('final-price').textContent = money.format(final);
-          document.getElementById('saved').textContent = 'You saved ' + money.format(saved);
-          document.getElementById('effective').textContent = totalDiscount.toFixed(1).replace('.0', '') + '% off in total';
-
-          var path = document.getElementById('price-path');
-          path.textContent = '';
-          addPathPart(path, 'step-price', money.format(values.original));
-          addPathPart(path, 'arrow', '→');
-          addPathPart(path, 'step-discount', values.first + '% off');
-          addPathPart(path, 'arrow', '→');
-          addPathPart(path, 'step-price', money.format(afterFirst));
-          if (values.second > 0) {
-            addPathPart(path, 'arrow', '→');
-            addPathPart(path, 'step-discount', values.second + '% off');
-            addPathPart(path, 'arrow', '→');
-            addPathPart(path, 'step-price', money.format(final));
-          }
-
-          layout.classList.add('has-result');
-          requestAnimationFrame(function () {
-            result.setAttribute('tabindex', '-1');
-            result.focus({ preventScroll: true });
-            result.removeAttribute('tabindex');
-            if (window.innerWidth < 800) result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-          });
-        });
-
-        [originalInput, firstInput, secondInput].forEach(function (input) {
-          input.addEventListener('input', function () {
-            setError(input, '');
-            layout.classList.remove('has-result');
-          });
-        });
-
         window.addEventListener('beforeinstallprompt', function (event) {
           event.preventDefault();
           deferredInstallPrompt = event;
-          installButton.textContent = 'Install Clear Price';
+          installButton.textContent = t('installNow');
         });
 
         installButton.addEventListener('click', function () {
@@ -888,7 +1349,7 @@
             deferredInstallPrompt['prompt']();
             deferredInstallPrompt.userChoice.then(function () {
               deferredInstallPrompt = null;
-              installButton.textContent = 'How to install';
+              installButton.textContent = t('installCta');
             });
             return;
           }
@@ -905,13 +1366,13 @@
 
         function shareDone(message) {
           shareLabel.textContent = message;
-          setTimeout(function () { shareLabel.textContent = 'Share Clear Price'; }, 2200);
+          setTimeout(function () { shareLabel.textContent = t('share'); }, 2200);
         }
 
         shareButton.addEventListener('click', function () {
           var shareData = {
             title: 'Clear Price',
-            text: 'Shopping a sale? Clear Price shows the real price after one or two stacked discounts.',
+            text: t('shareText'),
             url: shareUrl
           };
           if (navigator.share) {
@@ -920,7 +1381,7 @@
           }
           if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(shareUrl).then(function () {
-              shareDone('Link copied');
+              shareDone(t('linkCopied'));
             }).catch(function () {
               window.prompt('Copy the Clear Price link:', shareUrl);
             });
@@ -956,6 +1417,13 @@
 
         backToApp.addEventListener('click', closeOwnerMode);
 
+        /* ================= init ================= */
+        loadState();
+        currencySelect.value = state.currency;
+        applyStaticI18n();
+        renderCart();
+        updateCalculations();
+
         if (new URLSearchParams(window.location.search).get('owner') === '1') {
           openOwnerMode();
         }
@@ -973,5 +1441,6 @@
         }
       })();
     </script>
+
   </body>
 </html>

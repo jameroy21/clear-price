@@ -1,4 +1,4 @@
-var CACHE_NAME = 'clear-price-v3';
+var CACHE_NAME = 'clear-price-v4';
 var APP_FILES = [
   './app.html',
   './manifest.webmanifest',

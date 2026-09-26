@@ -1,10 +1,23 @@
-# Clear Price v1.2.0
+# Clear Price v2.0.0
 
-A stacked discount calculator. Type an original price and up to two stacked
-discounts, and it shows the real final price. Discounts stack sequentially:
-a 20% discount followed by a 70% discount is NOT 90% off.
+A stacked discount calculator. Type an original price and up to three stacked
+discounts, and it shows the real final price live as you type. Discounts stack
+sequentially: a 20% discount followed by a 70% discount is NOT 90% off.
 
 Example: $89, 20% off, then 70% off -> you pay $21.36, you saved $67.64.
+
+## What is new in v2
+
+- Live calculation: the result updates as you type. No button to press.
+- Cart: add multiple items, each with its own stacked discounts, plus one
+  combined total that stays visible while you scroll.
+- Currency switcher: USD ($), INR (₹), CAD (C$), TWD (NT$). Only the symbol
+  changes; nothing is converted. Your phone's locale picks the starting
+  currency, and you can override it.
+- English and Spanish interface, switchable at the top of the app and
+  remembered on your device.
+- Discount fields appear as you use them, up to three per item.
+- Your cart, currency, and language are saved on your device automatically.
 
 ## Install on your phone
 
